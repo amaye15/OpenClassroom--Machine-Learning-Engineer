@@ -5,7 +5,7 @@ import numpy as np
 import requests
 import json
 import os
-
+from datetime import datetime
 
 def find_csv_files(dir_path: str) -> List[str]:
     """
@@ -198,3 +198,38 @@ def impute_values(df: pd.DataFrame, condition: np.ndarray, imputer: SimpleImpute
         df.loc[condition, "geolocation_lat"] = lat_values
         df.loc[condition, "geolocation_lng"] = lng_values
     return df
+
+
+
+def transform_to_days(column: pd.Series) -> pd.Series:
+    """
+    Transforms a Pandas Series containing date-time strings into a Series 
+    of integers representing the number of days from each date-time to the current date-time.
+    
+    Parameters:
+        column (pd.Series): A Pandas Series containing date-time values.
+        
+    Returns:
+        pd.Series: A Pandas Series containing integers representing the number of days from
+                   each date-time to the current date-time.
+                   
+    Example:
+        >>> transform_to_days(pd.Series(['2021-01-01', '2022-05-15', '2022-09-30']))
+        0    650
+        1    151
+        2     15
+        dtype: int64
+    """
+    # Convert the column to datetime format
+    column_datetime = pd.to_datetime(column)
+    
+    # Get the current datetime
+    current_datetime = datetime.now()
+    
+    # Subtract the datetime column from the current datetime
+    time_delta = current_datetime - column_datetime
+    
+    # Extract the number of days from the time delta
+    days = time_delta.dt.days
+    
+    return days
