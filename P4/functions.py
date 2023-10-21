@@ -35,7 +35,7 @@ def find_csv_files(dir_path: str) -> List[str]:
     for root, _, filenames in os.walk(dir_path):
         for filename in filenames:
             # Identify if the file is a CSV file
-            if fnmatch.fnmatch(filename, '*.csv'):
+            if fnmatch.fnmatch(filename, '*.csv*'):
                 # Calculate and store the relative path
                 absolute_path = os.path.join(root, filename)
                 relative_path = os.path.relpath(absolute_path, current_working_dir)
@@ -67,7 +67,7 @@ def load_csvs_to_dict(file_list: List[str]) -> Dict[str, pd.DataFrame]:
         
         # Get the base name of the file and remove the extension to use as the key
         base_name: str = os.path.basename(file_name)
-        key_name: str = os.path.splitext(base_name)[0]
+        key_name: str = os.path.splitext(os.path.splitext(base_name)[0])[0]
         
         # Store the DataFrame in the dictionary
         df_dict[key_name] = df
