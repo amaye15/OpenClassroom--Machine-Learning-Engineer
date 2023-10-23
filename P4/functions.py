@@ -8,6 +8,32 @@ import os
 from datetime import datetime
 from sklearn.impute import SimpleImputer
 
+def csv_to_gzip_pandas_and_delete(csv_files: List[str]) -> None:
+    """
+    Convert a list of CSV files to gzipped files and delete the original CSV files.
+    
+    Parameters:
+        csv_files (List[str]): List of paths to the CSV files to be converted.
+        
+    Returns:
+        None: The function performs file operations and does not return any value.
+    """
+    for csv_file in csv_files:
+        # Define the gzipped filename based on the original csv filename
+        gzip_file = f"{csv_file}.gz"
+        
+        # Read the CSV into a DataFrame
+        df = pd.read_csv(csv_file)
+        
+        # Write the DataFrame to a GZIP file
+        df.to_csv(gzip_file, compression='gzip', index=False)
+        
+        # Delete the original CSV file
+        os.remove(csv_file)
+        
+        print(f"Converted {csv_file} to {gzip_file} and deleted the original file.")
+    return
+
 def find_csv_files(dir_path: str) -> List[str]:
     """
     Finds all CSV files in a given directory and its sub-directories 
