@@ -6,6 +6,7 @@ import requests
 import json
 import os
 from datetime import datetime
+from sklearn.impute import SimpleImputer
 
 def find_csv_files(dir_path: str) -> List[str]:
     """
@@ -159,8 +160,6 @@ def get_country_bounding_box(country_name: str) -> Union[Dict[str, float], Dict[
         'west': west,
         'east': east
     }
-
-from sklearn.impute import SimpleImputer
 
 def set_outliers(df: pd.DataFrame, bounds: dict) -> pd.DataFrame:
     """
