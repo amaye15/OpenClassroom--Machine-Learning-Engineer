@@ -206,7 +206,7 @@ def transform_columns(df: DataFrame) -> DataFrame:
     return transformed_df
 
 def optimize_dbscan(df: DataFrame, 
-                    eps_range: Union[List[float], Tuple[float, ...]] = [0.1, 0.5, 1.0], 
+                    eps_range: List[float] = [0.1, 0.5, 1.0], 
                     min_samples_range: Union[List[int], Tuple[int, ...]] = [2, 5, 10]) -> Dict[str, Union[float, int, List[Union[float, int]]]]:
     """
     Apply and optimize DBSCAN clustering on a given DataFrame.
