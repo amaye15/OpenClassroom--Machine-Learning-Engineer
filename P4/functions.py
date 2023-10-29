@@ -137,6 +137,44 @@ def plot_correlation_circle(df: DataFrame, dimension: str = '2d') -> None:
 
     else:
         raise ValueError("Only '2d' and '3d' are valid dimensions.")
+    
+def split_dataframe(df, num_splits, random_state=42):
+    """
+    Splits a DataFrame into a given number of unique samples.
+    
+    Parameters:
+    - df: DataFrame to be split
+    - num_splits: Number of unique samples to create
+    - random_state: Seed for reproducibility
+    
+    Returns:
+    - Dictionary of sampled DataFrames
+    """
+    
+    # Create an empty dictionary to store the sampled DataFrames
+    sampled_dfs = {}
+    
+    # Make a copy of the original DataFrame to avoid modifying it
+    remaining_df = df.copy()
+    
+    # Calculate the size of each split
+    split_size = len(df) // num_splits
+    
+    for i in range(num_splits):
+        # Sample without replacement
+        sampled_df = remaining_df.sample(n=split_size, replace=False, random_state=random_state)
+        
+        # Insert the sampled DataFrame into the dictionary with the split number as the key
+        sampled_dfs[f"split_{i+1}"] = sampled_df
+        
+        # Drop the sampled rows from the remaining DataFrame
+        remaining_df.drop(sampled_df.index, inplace=True)
+        
+        # Update random_state for the next iteration (if provided)
+        if random_state is not None:
+            random_state += 1
+    
+    return sampled_dfs
 
 def split_dataframe_by_time(df: DataFrame, datetime_col: str, n_splits: int) -> Union[Dict[str, DataFrame], None]:
     """
