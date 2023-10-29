@@ -7,7 +7,7 @@ import json
 import os
 from datetime import datetime
 from sklearn.impute import SimpleImputer
-from sklearn.cluster import KMeans, DBSCAN
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 from pandas import DataFrame, Timestamp, to_datetime
 from sklearn.preprocessing import QuantileTransformer, LabelEncoder
@@ -205,9 +205,66 @@ def transform_columns(df: DataFrame) -> DataFrame:
             
     return transformed_df
 
+
+def optimize_agglomerative_clustering(df: DataFrame, n_clusters_range: Tuple[int, int] = (2, 10), 
+                                      linkage_options: List[str] = ['ward', 'complete', 'average', 'single']) -> Dict[str, List[object]]:
+    """
+    Apply and optimize Agglomerative Clustering on a given DataFrame.
+    
+    Parameters:
+    - df: DataFrame, data for clustering
+    - n_clusters_range: tuple, range of n_clusters values to try (inclusive)
+    - linkage_options: list, types of linkage to try
+    
+    Returns:
+    - dict, containing optimal parameters and metrics
+    """
+    # Initialize variables to store metrics
+    n_values: List[int] = []
+    linkages: List[str] = []
+    silhouette_scores: List[float] = []
+    davies_bouldin_scores: List[float] = []
+    
+    # Loop through different values of n_clusters and linkage to find the optimal one
+    for n_clusters in range(n_clusters_range[0], n_clusters_range[1] + 1):  # Adding 1 to make the range inclusive
+        for linkage in linkage_options:
+            # Fit Agglomerative Clustering model
+            agglomerative = AgglomerativeClustering(n_clusters=n_clusters, linkage=linkage).fit(df)
+            
+            # Get cluster labels
+            labels: np.ndarray = agglomerative.labels_
+            
+            # Calculate metrics
+            silhouette: float = silhouette_score(df, labels)
+            davies_bouldin: float = davies_bouldin_score(df, labels)
+            
+            # Store metrics
+            n_values.append(n_clusters)
+            linkages.append(linkage)
+            silhouette_scores.append(silhouette)
+            davies_bouldin_scores.append(davies_bouldin)
+            
+    # Finding the optimal parameters based on metrics
+    # Lower Davies-Bouldin score is better. Higher silhouette score is better.
+    optimal_index: int = np.argmin(davies_bouldin_scores)  # Change this based on the metric you prioritize
+    optimal_n_clusters: int = n_values[optimal_index]
+    optimal_linkage: str = linkages[optimal_index]
+    
+    # Compile metrics
+    metrics: Dict[str, List[object]] = {
+        'n_values': n_values,
+        'linkages': linkages,
+        'silhouette_scores': silhouette_scores,
+        'davies_bouldin_scores': davies_bouldin_scores,
+        'optimal_n_clusters': optimal_n_clusters,
+        'optimal_linkage': optimal_linkage
+    }
+    
+    return metrics
+
 def optimize_dbscan(df: DataFrame, 
-                    eps_range: List[float] = [0.1, 0.5, 1.0], 
-                    min_samples_range: Union[List[int], Tuple[int, ...]] = [2, 5, 10]) -> Dict[str, Union[float, int, List[Union[float, int]]]]:
+                    eps_range: List[float] = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], 
+                    min_samples_range: Union[List[int], Tuple[int, ...]] = [10, 20, 30]) -> Dict[str, Union[float, int, List[Union[float, int]]]]:
     """
     Apply and optimize DBSCAN clustering on a given DataFrame.
     
