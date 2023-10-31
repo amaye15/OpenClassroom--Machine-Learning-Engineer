@@ -571,9 +571,6 @@ def transform_to_days(column: pd.Series) -> pd.Series:
     return days
 
 
-
-
-
 ### Legacy Code ###
 
 def get_country_bounding_box(country_name: str) -> Union[Dict[str, float], Dict[str, str]]:
