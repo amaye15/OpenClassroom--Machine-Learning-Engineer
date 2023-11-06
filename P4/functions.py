@@ -210,6 +210,15 @@ def split_dataframe_by_time(df: DataFrame, datetime_col: str, n_splits: int) -> 
         start_time: Timestamp = min_time + i * delta
         end_time: Timestamp = min_time + (i + 1) * delta
         key: str = f"{start_time} to {end_time}"
+        # Split by 'to' to get start and end date-time strings
+        start_dt, end_dt = key.split(' to ')
+        
+        # Further split to separate date and time parts
+        start_date = start_dt.split(' ')[0]
+        end_date = end_dt.split(' ')[0]
+        
+        # Reconstruct the string using only date parts
+        key = f"{start_date} to {end_date}"
         split_df: DataFrame = df_sorted[(df_sorted[datetime_col] >= start_time) & (df_sorted[datetime_col] < end_time)]
         splits[key] = split_df
         
