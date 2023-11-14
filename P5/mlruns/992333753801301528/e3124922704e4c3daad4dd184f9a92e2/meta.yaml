@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/typhaine/Documents/Doc_Gorilla/OpenClassroom--Machine-Learning-Engineer/P5/mlruns/992333753801301528/e3124922704e4c3daad4dd184f9a92e2/artifacts
+end_time: 1699984291697
+entry_point_name: ''
+experiment_id: '992333753801301528'
+lifecycle_stage: active
+run_id: e3124922704e4c3daad4dd184f9a92e2
+run_name: enchanting-carp-419
+run_uuid: e3124922704e4c3daad4dd184f9a92e2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1699984267479
+status: 3
+tags: []
+user_id: typhaine

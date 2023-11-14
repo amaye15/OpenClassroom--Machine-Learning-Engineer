@@ -1,0 +1,6 @@
+artifact_location: file:///Users/typhaine/Documents/Doc_Gorilla/OpenClassroom--Machine-Learning-Engineer/P5/mlruns/992333753801301528
+creation_time: 1699984116641
+experiment_id: '992333753801301528'
+last_update_time: 1699984116641
+lifecycle_stage: active
+name: GridSearchCV_Experiment
